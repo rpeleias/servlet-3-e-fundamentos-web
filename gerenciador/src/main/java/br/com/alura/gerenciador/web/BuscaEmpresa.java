@@ -1,12 +1,8 @@
 package br.com.alura.gerenciador.web;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Collection;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,28 +10,19 @@ import br.com.alura.gerenciador.Empresa;
 import br.com.alura.gerenciador.dao.EmpresaDAO;
 
 @WebServlet("/busca")
-public class BuscaEmpresa extends HttpServlet{
+public class BuscaEmpresa implements Tarefa{
 
-	private static final long serialVersionUID = -5640846148829616329L;
+	public BuscaEmpresa() {
+		System.out.println("Instanciando a Servlet" + this);
+	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-
-		PrintWriter writer = resp.getWriter();
-		writer.println("<html>");
-		writer.println("<body>");
-		writer.println("Resultado da busca:<br/>");
-		writer.println("</body>");
-		writer.println("<html>");
-
-		String filtro = req.getParameter("filtro");
+	public String executa(HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		String filtro = request.getParameter("filtro");
 		Collection<Empresa> empresas = new EmpresaDAO().buscaPorSimilaridade(filtro);
-
-		writer.println("<ul>");
-		for (Empresa empresa : empresas) {
-			writer.println("<li>" + empresa.getId() + ":" + empresa.getNome() + "</li>");
-		}
-		writer.println("</ul>");
+		request.setAttribute("empresas", empresas);
+		return "/WEB-INF/paginas/buscaEmpresas.jsp";
 	}
 }
